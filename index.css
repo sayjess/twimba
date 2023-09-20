@@ -42,6 +42,13 @@ header{
     gap: 10px;
 }
 
+.user-reply-container {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid lightgray;
+    padding-top: 15px;
+}
+
 /* textareas + btn */
 
 textarea{
@@ -80,6 +87,27 @@ button{
     display: flex;
     align-items: flex-start;
     gap: 10px;
+    position: relative;
+    
+}
+
+.tweet-inner-upper {
+    display: flex;
+}
+
+.delete{
+    position: absolute;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: black;
+    color: red;
+    right: 20px;
+    display: none;
+    cursor: pointer;
+}
+
+.fa-ellipsis {
+    margin-left: auto;
 }
 
 .tweet-details{
@@ -113,6 +141,30 @@ button{
     font-size: 14px;
     line-height: 20px;
 }
+
+.user-reply {
+    padding: 0px;
+    margin: 0 0 0 40px;
+    height: 40px;
+    width: 70%;
+    font-size: 16px;
+    line-height: 40px;
+    
+}
+
+.user-reply-container > button {
+    padding: 10px 0;
+    border-radius: 30px;
+    width: 30%; 
+    font-size: 16px;
+    font-weight: bold;
+    
+
+}
+
+
+
+
 
 /* images */
 
