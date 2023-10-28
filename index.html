@@ -16,17 +16,54 @@
     <title>Twimba</title>
 </head>
 <body>
-	<header>
+	<!-- <header>
 		<h1>Twimba</h1>
-	</header>
+	</header> -->
 	<main>
-		<div class="tweet-input-area">
+		<section id="logged-out-view">
+			<img class="twitter-logo" src="https://etmonline.org/wp-content/uploads/2016/10/Twitter-purple-logo.png" alt="twimba logo">
+			<div class="logged-out-first-wrapper">
+				<h2>Happening now</h2>
+				<div class="logged-out-second-wrapper">
+					<h3>Join today.</h3>
+					<button class="google-btn">
+						Sign in with Google
+						<img class="google-logo" src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="google logo">
+					</button>
+					<p>or</p>
+					<button class="create-account-btn">Create account</button>
+					<p>Already have an account?</p>
+					<button class="sign-in-btn">Sign In</button>
+				</div>
+			</div>
+		</section>
+
+		<section id="signing-in-view">
+			<i class="fa-solid fa-x"></i>
+			<img class="twitter-logo" src="https://etmonline.org/wp-content/uploads/2016/10/Twitter-purple-logo.png" alt="twimba logo">
+			<div class="signing-in-view-first-wrapper">
+				<h3>Sign in to Twimba</h3>
+				<button class="google-btn">
+					Sign in with Google
+					<img class="google-logo" src="https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png" alt="google logo">
+				</button>
+				<p>or</p>
+				<input type="email" placeholder="email">
+				<input type="password" placeholder="password">
+				<button class="blk-btn">Next</button>
+			</div>
+		</section>
+
+		<section id="logged-in-view">
+
+		</section>
+		<!-- <div class="tweet-input-area">
 			<img src="images/scrimbalogo.png" class="profile-pic">
 			<textarea placeholder="What's happening?" id="tweet-input"></textarea>
 		</div>
 		<button id="tweet-btn">Tweet</button>
 		<div class="feed" id="feed"></div>
-	</main>
+	</main> -->
 	<script src="index.js" type="module"></script>
 </body>
 </html>

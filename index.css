@@ -1,180 +1,147 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
 html, body {
     margin: 0;
     padding: 0;
-    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Roboto', sans-serif; */
+    font-family: 'Jost', sans-serif;
 }
 
-/* typography and icons */
+/* typography, icons, img */
 
-h1{
-    color: #0F8CDF;
-    margin-bottom: 10px;
-    font-size: 20px;
+/* logged out view */
+main > section:first-of-type h2 {
+    font-weight: 800;
+    font-size: 2.5rem;
 }
 
-i{
-    font-size: 15px;
-    cursor: pointer;
+main > section:first-of-type .logged-out-second-wrapper h3 {
+    font-weight: 700;
+    font-size: 1rem;
 }
 
-.liked{
-    color: red;
+.twitter-logo {
+    width: 50px;
 }
 
-.retweeted {
-  color: limegreen;
+.logged-out-second-wrapper p {
+    text-align: center;
+}
+
+.google-logo {
+    width: 30px;
+}
+
+/* signing in view */
+.signing-in-view-first-wrapper h3 {
+    font-weight: 600;
+    font-size: 1.3rem;
 }
 
 /* layout */
 
-main, header{
-    width: 290px;
-    margin: 0 auto;
+/* logged-out view */
+main > section:first-of-type {
+    margin: 10px 20px;
+    display: none;
 }
 
-header{
-    padding-bottom: 25px;
+.logged-out-second-wrapper{
+    width: 70%;
 }
 
-.tweet-input-area {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
 
-.user-reply-container {
-    display: flex;
-    justify-content: space-between;
-    border-top: 1px solid lightgray;
-    padding-top: 15px;
-}
-
-/* textareas + btn */
-
-textarea{
-    border: none;
-    resize: none;
-    padding: 10px;
-    margin: 0 0 20px 0;
-    height: 60px;
+/* buttons */
+main > section:first-of-type button{
     width: 100%;
-    font-size: 20px;
-    line-height: 30px;
 }
 
-button{
-    background-color: #1DA1F2;
-    border: none;
-    color: white;
-    padding: 10px 19px;
-    border-radius: 20px;
-    width: 100%; 
-    cursor: pointer;
-    font-size: 20px;
+button {
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(28, 28, 28, 0.612);
+}
+
+.google-btn {
+    background-color: white;
+    padding-block: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+
+.sign-in-btn {
+    color: #0F8CDF;
+    background-color: white;
     font-weight: 600;
 }
 
-/* tweet */
-
-.tweet{
-    border-top: 1px solid lightgray;
-    padding: 20px 0 0 0;
-    width: 100%;
-    margin: 15px 0;
+.create-account-btn {
+    background-color: #0F8CDF;
+    color: white;
+    border: none;
 }
 
-.tweet-inner{
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    position: relative;
-    
-}
-
-.tweet-inner-upper {
-    display: flex;
-}
-
-.delete{
-    position: absolute;
-    padding: 10px;
-    border-radius: 5px;
+.blk-btn {
     background-color: black;
-    color: red;
-    right: 20px;
-    display: none;
-    cursor: pointer;
+    color: white;
 }
 
-.fa-ellipsis {
-    margin-left: auto;
+/* input */
+input {
+    /* padding: 10px 20px; */
+    font-size: .8rem;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(28, 28, 28, 0.612);
 }
 
-.tweet-details{
-    display: flex;
-    font-size: 13px;
-    justify-content: space-between;
-    width: 160px;
+.signing-in-view-first-wrapper > input {
+    margin-bottom: 10px;
 }
 
-.tweet-detail{
-    display: flex;
-    gap: 4px;
-}
+/* media screens */
 
-.tweet-reply{
-    border-top: 1px solid lightgray;
-    padding: 20px 0 0 0px;
-    margin: 10px 0 10px 40px;
-    width: 80%;
-}
+@media (max-width: 600px) {
 
-.handle{
-    font-size: 12px;
-    font-weight: 500;
-    color: #555;
-    margin-top: 0;
-}
+    /* layout */
+    /* signing-in view */
+    #signing-in-view {
+        padding-top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 90vh;
+        position: relative;
+    } 
 
-.tweet-text{
-    width: 207px;
-    font-size: 14px;
-    line-height: 20px;
-}
+    .fa-x {
+        font-size: .7rem;
+        position: absolute; 
+        left: 21px;  
+        top: 27px; 
+    }
 
-.user-reply {
-    padding: 0px;
-    margin: 0 0 0 40px;
-    height: 40px;
-    width: 70%;
-    font-size: 16px;
-    line-height: 40px;
+    .signing-in-view-first-wrapper {
+        width: 60%;
+        margin-block: auto;
+    }
+
+    .signing-in-view-first-wrapper > p {
+        text-align: center;
+    }
     
-}
+    /* buttons */
+    .signing-in-view-first-wrapper > button{
+        width: 100%;
+    }
 
-.user-reply-container > button {
-    padding: 10px 0;
-    border-radius: 30px;
-    width: 30%; 
-    font-size: 16px;
-    font-weight: bold;
-    
-
-}
-
-
-
-
-
-/* images */
-
-.profile-pic{
-    border: 1px solid lightgray;
-    border-radius: 50%;
-    width: 48px;
-}
-
-/* utility */
-.hidden{
-    display: none;
+    .signing-in-view-first-wrapper > input {
+        width: 100%;
+    }
 }
