@@ -11,6 +11,15 @@ html, body {
     font-family: 'Jost', sans-serif;
 }
 
+
+
+/* signing in view */
+/* #signing-in-view {
+    display: none;
+} */
+
+
+
 /* typography, icons, img */
 
 /* logged out view */
@@ -28,7 +37,7 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     width: 50px;
 }
 
-.logged-out-second-wrapper p {
+.logged-out-second-wrapper > p {
     text-align: center;
 }
 
@@ -45,15 +54,35 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
 /* layout */
 
 /* logged-out view */
-main > section:first-of-type {
-    margin: 10px 20px;
-    display: none;
-}
 
 .logged-out-second-wrapper{
     width: 70%;
 }
 
+#signing-in-view {
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90vh;
+    position: relative;
+} 
+
+.fa-x {
+    font-size: .7rem;
+    position: absolute; 
+    left: 21px;  
+    top: 27px; 
+}
+
+.signing-in-view-first-wrapper {
+    width: 60%;
+    margin-block: auto;
+}
+
+.signing-in-view-first-wrapper > p {
+    text-align: center;
+}
 
 /* buttons */
 main > section:first-of-type button{
@@ -86,6 +115,9 @@ button {
     color: white;
     border: none;
 }
+.signing-in-view-first-wrapper > button{
+    width: 100%;
+}
 
 .blk-btn {
     background-color: black;
@@ -103,45 +135,130 @@ input {
 
 .signing-in-view-first-wrapper > input {
     margin-bottom: 10px;
-}
-
+    width: 100%;
+}   
 /* media screens */
 
 @media (max-width: 600px) {
 
     /* layout */
+    /* logged out view */
+    main > section:first-of-type {
+        margin: 10px 20px;
+        display: none;
+    }
     /* signing-in view */
-    #signing-in-view {
-        padding-top: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 90vh;
-        position: relative;
-    } 
+}
 
-    .fa-x {
-        font-size: .7rem;
-        position: absolute; 
-        left: 21px;  
-        top: 27px; 
+@media (min-width: 600px) {
+
+    .logged-out-second-wrapper > p:first-of-type {
+        font-size: 1.4rem;
+        margin-block: 5px;
+    }
+
+    .logged-out-second-wrapper .bold {
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-align: left;
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+
+    /* layout */
+
+    main {
+        position: relative;
+    }
+
+    /* logged out view */
+    main > section:first-of-type {
+        margin-inline: 20em;
+        height: 100vh;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logged-out-second-wrapper{
+        width: 65%;
+    }
+
+    /* sign-in-view */
+    #signing-in-view {
+        position: absolute;
+        background-color: rgb(0, 0, 0);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        height: 70vh;
+        width: 40%;
+        border-radius: 20px;
+        color: white;
+        /* display: none; */
     }
 
     .signing-in-view-first-wrapper {
-        width: 60%;
-        margin-block: auto;
-    }
-
-    .signing-in-view-first-wrapper > p {
-        text-align: center;
-    }
-    
-    /* buttons */
-    .signing-in-view-first-wrapper > button{
-        width: 100%;
+        width: 50%;
     }
 
     .signing-in-view-first-wrapper > input {
-        width: 100%;
+        font-size: 1.1rem;
+        padding: 10px;
     }
+
+    /* typography, icons, img */
+    /* logged out view */
+    #logged-out-view .twitter-logo {
+        width: 30%;
+    }
+
+    
+    main > section:first-of-type h2 {
+        font-size: 5rem;
+    }
+
+    main > section:first-of-type .logged-out-second-wrapper h3 {
+    font-size: 3.5rem;
+    }
+
+    .signing-in-view-first-wrapper h3 {
+        font-size: 2rem;
+    }
+    .signing-in-view-first-wrapper p {
+        font-size: 1.4rem;
+    }
+
+    /* buttons */
+
+    button {
+        padding: 18px 30px;
+        border-radius: 50px;
+        border: 1px solid rgba(28, 28, 28, 0.612);
+        font-size: 1.2rem;
+    }
+
+    .google-btn {
+        padding-block: 12.4px;
+    }
+
+    .blk-btn {
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+    }
+
+    .signing-in-view-first-wrapper > button:last-of-type {
+        margin-top: 10px;
+    }
+    
+    /* input */
+
+    .signing-in-view-first-wrapper > input {
+        background-color: inherit;
+        border: 2px solid rgba(255, 255, 255, 0.199);
+        padding: 18px;
+    }
+    
 }

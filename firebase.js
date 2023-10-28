@@ -1,4 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-auth.js"
+
   const firebaseConfig = {
     apiKey: "AIzaSyDpcqazNO7BG0wRO9vkMZ2S4buaeMAmFTM",
     authDomain: "twimba-6ff84.firebaseapp.com",
@@ -6,4 +9,5 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebas
     storageBucket: "twimba-6ff84.appspot.com",
   };
 
-  const app = initializeApp(firebaseConfig)
+  export const app = initializeApp(firebaseConfig)
+  export const auth = getAuth(app)
