@@ -50,7 +50,7 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     width: 70%;
 }
 
-main > section:nth-child(2) {
+.modal {
     padding-top: 20px;
     display: flex;
     flex-direction: column;
@@ -177,7 +177,7 @@ input {
     }
 
     /* sign-in-view */
-    main > section:nth-child(2) {
+    .modal {
         position: absolute;
         background-color: rgb(0, 0, 0);
         top: 50%;

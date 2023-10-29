@@ -23,13 +23,15 @@ const getElement = (id) => document.getElementById(id)
 const viewLoggedOutPage = getElement("logged-out-view")
 const viewLoggedInPage = getElement("logged-in-view")
 const viewSignInPage = getElement("signing-in-view")
+const viewCreateAccountPage = getElement('create-account-view')
 
 const viewLoggedOutPageBtn = getElement("logout")
 const signInWithGoogleBtnEls = document.querySelectorAll(".sign-in-with-google-btn")
 
 const goToSignInPageEl = getElement("go-to-sign-in-page-btn")
-const closeSignInPageEl = getElement("close-sign-in-page")
+const goToCreateAccountPageEl = getElement("go-to-create-account-btn")
 
+const closeSignInOrCreatePageEls = document.querySelectorAll(".close-page")
 
 
 // UI EVENT LISTENERS
@@ -43,10 +45,18 @@ for (let signInWithGoogleBtnEl of signInWithGoogleBtnEls) {
 }
 addClickListener(viewLoggedOutPageBtn, authSignOut)
 
-addClickListener(goToSignInPageEl, onEmailSignInBtnClick)
-addClickListener(closeSignInPageEl, onCloseEmailSignInPageClick)
-// ------------
 
+// ------------
+addClickListener(goToSignInPageEl, onEmailSignInBtnClick)
+addClickListener(goToCreateAccountPageEl, onCreateAccountBtnClick)
+
+for (let closeSignInOrCreatePageEl of closeSignInOrCreatePageEls) {
+    if(closeSignInOrCreatePageEl.parentElement.id === "create-account-view"){
+        addClickListener(closeSignInOrCreatePageEl, onCloseEmailSignInOrCreatePageClick("create-account"))
+    }else {
+        addClickListener(closeSignInOrCreatePageEl, onCloseEmailSignInOrCreatePageClick("sign-in"))
+    }
+}
 
 // MAIN CODE
 onAuthStateChanged(auth, (user) => {
@@ -99,35 +109,73 @@ function showLoggedOutView() {
 // SIGN IN POP UP/PAGE VIEW
 function onEmailSignInBtnClick() {
     if(window.innerWidth > 600) {
-        signInViewInDesktop(true)
+        signInOrCreateAccountViewInDesktop(true, "sign-in")
     } else {
-        signInViewInMobile(true)
+        signInOrCreateAccountViewInMobile(true, "sign-in")
     }
 }
-function onCloseEmailSignInPageClick() {
+
+function onCreateAccountBtnClick() {
+    console.log("create-account button clicked")
     if(window.innerWidth > 600) {
-        signInViewInDesktop(false)
+        signInOrCreateAccountViewInDesktop(true, "create-account")
     } else {
-        signInViewInMobile(false)
+        signInOrCreateAccountViewInMobile(true, "create-account")
+    }
+}
+function onCloseEmailSignInOrCreatePageClick(isCreateAccount) {
+    // console.log(isCreateAccount)
+    if(window.innerWidth > 600) {
+        if(isCreateAccount === "create-account"){
+            signInOrCreateAccountViewInDesktop(false, "create-account")
+        } else {
+            signInOrCreateAccountViewInDesktop(false, "sign-in")
+        }
+    } else {
+        if(isCreateAccount === "create-account"){
+            signInOrCreateAccountViewInMobile(false, "create-account")
+        } else {
+            signInOrCreateAccountViewInMobile(false, "sign-in")
+        }
     }
 }
 
 
-function signInViewInDesktop(isOpen) {
+function signInOrCreateAccountViewInDesktop(isOpen, view=null) {
     if(isOpen){
-        SignInView(true)
+        if(view === "sign-in"){
+            SignInView(true)
+        } else if (view === "create-account"){
+            createAccountView(true)
+        }
     } else {
-        SignInView(false)
+        if(view === "sign-in"){
+            SignInView(false)
+        } else if (view === "create-account"){
+            createAccountView(false)
+        }
     }
 }
 
-function signInViewInMobile(isOpen) {
+function signInOrCreateAccountViewInMobile(isOpen, view=null) {
+    // console.log(view)
     if(isOpen){
-        SignInView(true)
-        LogoutView(false)
-    }else {
-        SignInView(false)
-        LogoutView(true)
+        console.log(view)
+        if(view === "sign-in"){
+            SignInView(true)
+            LogoutView(false)
+        } else if (view === "create-account"){
+            createAccountView(true)
+            LogoutView(false)
+        }
+    } else {
+        if(view === "sign-in"){
+            SignInView(false)
+            LogoutView(true)
+        } else if (view === "create-account"){
+            createAccountView(false)
+            LogoutView(true)
+        }
     }
 }
 
@@ -154,6 +202,14 @@ function SignInView(isVisible) {
         viewSignInPage.classList.remove("hidden")
     } else {
         viewSignInPage.classList.add("hidden")
+    }
+}
+
+function createAccountView(isVisible) {
+    if(isVisible){
+        viewCreateAccountPage.classList.remove("hidden")
+    } else {
+        viewCreateAccountPage.classList.add("hidden")
     }
 }
 
