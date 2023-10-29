@@ -52,9 +52,9 @@ addClickListener(goToCreateAccountPageEl, onCreateAccountBtnClick)
 
 for (let closeSignInOrCreatePageEl of closeSignInOrCreatePageEls) {
     if(closeSignInOrCreatePageEl.parentElement.id === "create-account-view"){
-        addClickListener(closeSignInOrCreatePageEl, onCloseEmailSignInOrCreatePageClick("create-account"))
+        addClickListener(closeSignInOrCreatePageEl, () => onCloseEmailSignInOrCreatePageClick("create-account"))
     }else {
-        addClickListener(closeSignInOrCreatePageEl, onCloseEmailSignInOrCreatePageClick("sign-in"))
+        addClickListener(closeSignInOrCreatePageEl, () => onCloseEmailSignInOrCreatePageClick("sign-in"))
     }
 }
 
