@@ -1,104 +1,24 @@
-// function onEmailSignInBtnsClick(isSignInPageViewOpen) {
-//     if(window.innerWidth > 600) {
-//         if(isSignInPageViewOpen){
-//             showSignInViewInDesktop()
-//         } else {
-//             goBackToLoginViewFromSignInViewInDesktop()
-//         }
-//     } else {
-//         if(isSignInPageViewOpen){
-//             showSignInViewInMobile()
-//         } else {
-//             goBackToLoginViewFromSignInViewInMobile()
-//         }
-//     }
-// }
+const emailInputEl = document.getElementById("email-input")
+const passwordInputEl = document.getElementById("password-input")
 
-// function signInViewInDesktop(isOpen) {
-//     if(isOpen){
-//         SignInView(true)
-//     } else {
-//         SignInView(false)
-//     }
-// }
-
-// function signInViewInMobile(isOpen) {
-//     if(isOpen){
-//         SignInView(true)
-//         LogoutView(false)
-//     }else {
-//         SignInView(false)
-//         LogoutView(true)
-//     }
-// }
-
-// function onCloseEmailSignInPageClick() {
-//     if(window.innerWidth > 600) {
-//         goBackToLoginViewFromSignInViewInDesktop()
-//     } else {
-//         goBackToLoginViewFromSignInViewInMobile()
-//     }
-// }
-
-function onEmailSignInBtnClick() {
-    if(window.innerWidth > 600) {
-        signInViewInDesktop(true)
-    } else {
-        signInViewInMobile(true)
-    }
+function authSignInWithEmail() {
+    const email = emailInputEl.value
+    const password = passwordInputEl.value
+    
+    signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            clearAuthFields()
+        })
+        .catch((error) => {
+            console.error(error.message)
+        })
 }
 
-function onCreateAccountBtnClick() {
-    if(window.innerWidth > 600) {
-        signInViewInDesktop(true)
-    } else {
-        signInViewInMobile(true)
-    }
+function clearInputField(field) {
+	field.value = ""
 }
 
-function signInOrCreateViewInDesktop(isOpen, view=null) {
-    if(isOpen){
-        if(view === "sign-in"){
-            SignInView(true)
-        } else if (view === "create-account"){
-            createAccountView(true)
-        }
-    } else {
-        if(view === "sign-in"){
-            SignInView(false)
-        } else if (view === "create-account"){
-            createAccountView(false)
-        }
-    }
+function clearAuthFields() {
+	clearInputField(emailInputEl)
+	clearInputField(passwordInputEl)
 }
-
-function signInOrCreateViewInMobile(isOpen, view=null) {
-    if(isOpen){
-        SignInView(true)
-        LogoutView(false)
-    }else {
-        SignInView(false)
-        LogoutView(true)
-    }
-
-    if(isOpen){
-        if(view === "sign-in"){
-            SignInView(true)
-            LogoutView(false)
-        } else if (view === "create-account"){
-            createAccountView(true)
-            LogoutView(false)
-        }
-    } else {
-        if(view === "sign-in"){
-            SignInView(false)
-            LogoutView(true)
-        } else if (view === "create-account"){
-            createAccountView(false)
-            LogoutView(true)
-        }
-    }
-}
-
-
-

@@ -4,7 +4,9 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
-  signOut
+  signOut,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
 const firebaseConfig = {
@@ -33,6 +35,9 @@ const goToCreateAccountPageEl = getElement("go-to-create-account-btn")
 
 const closeSignInOrCreatePageEls = document.querySelectorAll(".close-page")
 
+const onCreateAccountBtnEl = getElement("create-account-btn")
+const onSignInAccountBtnEl = getElement("sign-in-btn")
+
 
 // UI EVENT LISTENERS
 const addClickListener = (element, callback) => element.addEventListener("click", callback)
@@ -57,6 +62,9 @@ for (let closeSignInOrCreatePageEl of closeSignInOrCreatePageEls) {
         addClickListener(closeSignInOrCreatePageEl, () => onCloseEmailSignInOrCreatePageClick("sign-in"))
     }
 }
+
+addClickListener(onCreateAccountBtnEl, authCreateAccountWithEmail)
+addClickListener(onSignInAccountBtnEl, authSignInWithEmail)
 
 // MAIN CODE
 onAuthStateChanged(auth, (user) => {
@@ -93,11 +101,42 @@ function authSignOut() {
         })
 }
 
+// create account using email and password
+function authCreateAccountWithEmail() {
+    const email = document.getElementById("create-email")
+    const password = document.getElementById("create-password")
+
+    createUserWithEmailAndPassword(auth, email.value, password.value)
+        .then((userCredential) => {
+            clearAuthFields([email, password])
+        })
+        .catch((error) => {
+            console.error(error.message) 
+        })
+}
+
+// sign in using email and password
+function authSignInWithEmail() {
+    const email = document.getElementById("sign-in-email")
+    const password = document.getElementById("sign-in-password")
+    
+    signInWithEmailAndPassword(auth, email.value, password.value)
+        .then((userCredential) => {
+            clearAuthFields([email, password])
+        })
+        .catch((error) => {
+            console.error(error.message)
+        })
+}
+
+
 // FUNCTIONS - UI FUNCTIONS
 // LOGGED IN AND LOGGED OUT VIEW
 function showLoggedInView() {
     LoginView(true)
     LogoutView(false)
+    createAccountView(false)
+    SignInView(false)
 }
 
 function showLoggedOutView() {
@@ -158,9 +197,8 @@ function signInOrCreateAccountViewInDesktop(isOpen, view=null) {
 }
 
 function signInOrCreateAccountViewInMobile(isOpen, view=null) {
-    // console.log(view)
     if(isOpen){
-        console.log(view)
+        
         if(view === "sign-in"){
             SignInView(true)
             LogoutView(false)
@@ -213,3 +251,13 @@ function createAccountView(isVisible) {
     }
 }
 
+// CLEAR INPUT FIELDS
+function clearAuthFields(fields) {
+	fields.forEach(field => {
+        clearInputField(field)
+    })
+}
+
+function clearInputField(field) {
+	field.value = ""
+}

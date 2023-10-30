@@ -119,6 +119,7 @@ button {
 /* input */
 input {
     /* padding: 10px 20px; */
+    color: pink;
     font-size: .8rem;
     padding: 8px;
     border-radius: 4px;
