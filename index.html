@@ -35,7 +35,7 @@
 					<p>or</p>
 					<button 
 					id="go-to-create-account-btn"
-					class="create-account-btn">Create account</button>
+					class="primary-btn">Create account</button>
 					<p class="bold">Already have an account?</p>
 					<button id="go-to-sign-in-page-btn" class="sign-in-btn">Sign In</button>
 				</div>
@@ -90,17 +90,17 @@
 			</div>
 		</section>
 
-		<section id="logged-in-view" class="hidden">
+		<section id="logged-in-view" class="logged-in-view hidden">
 			<button id="logout">logout</button>
-			<h1>You're in!</h1>
+			<main>
+				<div class="tweet-input-area">
+					<img id="profile-pic" class="profile-pic">
+					<textarea placeholder="What's happening?!" id="tweet-input"></textarea>
+				</div>
+				<button id="tweet-btn" class="primary-btn post-btn">Tweet</button>
+				<div class="feed" id="feed"></div>
+			</main>
 		</section>
-		<!-- <div class="tweet-input-area">
-			<img src="images/scrimbalogo.png" class="profile-pic">
-			<textarea placeholder="What's happening?" id="tweet-input"></textarea>
-		</div>
-		<button id="tweet-btn">Tweet</button>
-		<div class="feed" id="feed"></div>
-	</main> -->
 	<script src="index.js" type="module"></script>
 </body>
 </html>

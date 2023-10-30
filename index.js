@@ -9,6 +9,18 @@ import {
   signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
+import { getFirestore,
+    collection,
+    addDoc,
+    serverTimestamp,
+    onSnapshot,
+    query,
+    where,
+    orderBy,
+    doc,
+    updateDoc,
+   deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"
+
 const firebaseConfig = {
   apiKey: "AIzaSyDpcqazNO7BG0wRO9vkMZ2S4buaeMAmFTM",
   authDomain: "twimba-6ff84.firebaseapp.com",
@@ -16,9 +28,10 @@ const firebaseConfig = {
   storageBucket: "twimba-6ff84.appspot.com",
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig)
+const auth = getAuth(app)
+const provider = new GoogleAuthProvider()
+const db = getFirestore(app)
 
 // UI ELEMENTS
 const getElement = (id) => document.getElementById(id)
@@ -37,6 +50,13 @@ const closeSignInOrCreatePageEls = document.querySelectorAll(".close-page")
 
 const onCreateAccountBtnEl = getElement("create-account-btn")
 const onSignInAccountBtnEl = getElement("sign-in-btn")
+
+
+const userProfilePictureEl = getElement("profile-pic")
+const textareaEl = getElement("tweet-input")
+const postBtnEl = getElement("tweet-btn")
+
+const feedEl = getElement("feed")
 
 
 // UI EVENT LISTENERS
@@ -66,15 +86,22 @@ for (let closeSignInOrCreatePageEl of closeSignInOrCreatePageEls) {
 addClickListener(onCreateAccountBtnEl, authCreateAccountWithEmail)
 addClickListener(onSignInAccountBtnEl, authSignInWithEmail)
 
+addClickListener(postBtnEl, postButtonPressed)
+
 // MAIN CODE
 onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("Successfully signed in")
-        showLoggedInView();
+        showLoggedInView()
+        showProfilePicture(userProfilePictureEl, user)
+        fetchInRealtimeAndRenderPostsFromDB()
     } else {
         showLoggedOutView()
     }
 })
+
+// GLOBAL VARIABLE
+const collectionName = "posts"
 
 // FUNCTIONS
 
@@ -129,6 +156,26 @@ function authSignInWithEmail() {
         })
 }
 
+// CLOUD FIRESTORE
+async function addPostToDB(postBody, auth) {
+    try {
+        const docRef = await addDoc(collection(db, collectionName), {
+            uid: auth.uid,
+            handle: auth.displayName,
+            profilePic: auth.photoURL,
+            tweetText: postBody,
+            likes: 0,
+            retweets: 0,
+            replies: [],
+            isLiked: false,
+            isRetweeted: false,
+            createdAt: serverTimestamp()
+        })
+    } catch (error) {
+        console.error(error.message)
+    }
+}
+
 
 // FUNCTIONS - UI FUNCTIONS
 // LOGGED IN AND LOGGED OUT VIEW
@@ -163,7 +210,6 @@ function onCreateAccountBtnClick() {
     }
 }
 function onCloseEmailSignInOrCreatePageClick(isCreateAccount) {
-    // console.log(isCreateAccount)
     if(window.innerWidth > 600) {
         if(isCreateAccount === "create-account"){
             signInOrCreateAccountViewInDesktop(false, "create-account")
@@ -198,7 +244,7 @@ function signInOrCreateAccountViewInDesktop(isOpen, view=null) {
 
 function signInOrCreateAccountViewInMobile(isOpen, view=null) {
     if(isOpen){
-        
+
         if(view === "sign-in"){
             SignInView(true)
             LogoutView(false)
@@ -216,6 +262,122 @@ function signInOrCreateAccountViewInMobile(isOpen, view=null) {
         }
     }
 }
+
+// USER PROFILE PICTURE DISPLAY
+function showProfilePicture(imgElement, user) {
+    const photoURL = user.photoURL
+    
+    if (photoURL) {
+        imgElement.src = photoURL
+    } else {
+        imgElement.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+    }
+}
+
+// TWEET BUTTON PRESS
+function postButtonPressed() {
+    const postBody = textareaEl.value
+    const user = auth.currentUser
+    console.log(postBody)
+    if (postBody) {
+        addPostToDB(postBody, user)
+        clearInputField(textareaEl)
+    }
+}
+
+
+
+//DISPLAY POSTS IN FEED 
+function fetchInRealtimeAndRenderPostsFromDB() {
+    onSnapshot(collection(db, collectionName), (querySnapshot) => {
+        clearAll(feedEl)
+        querySnapshot.forEach((doc) => {
+            renderPost(feedEl, doc.data())
+        })
+    })
+}
+
+function renderPost(postsEl, postData) {
+    let likeIconClass = ''
+        
+    if (postData.isLiked){
+        likeIconClass = 'liked'
+    }
+    
+    let retweetIconClass = ''
+    
+    if (postData.isRetweeted){
+        retweetIconClass = 'retweeted'
+    }
+    
+    let repliesHtml = ''
+
+    if(postData.replies.length > 0){
+        postData.replies.forEach(function(reply){
+            repliesHtml+=`
+                <div class="tweet-reply">
+                    <div class="tweet-inner">
+                        <img src="${reply.profilePic}" class="profile-pic">
+                            <div>
+                                <p class="handle">${reply.handle}</p>
+                                <p class="tweet-text">${reply.tweetText}</p>
+                            </div>
+                        </div>
+                </div>
+`
+        })
+    }
+
+    feedEl.innerHTML += `
+    <div class="tweet">
+        <div class="tweet-inner">
+            <img src="${postData.profilePic}" class="profile-pic">
+            <div>
+                <div class="tweet-inner-upper">
+                    <p class="handle">${postData.handle}</p>
+                    <div class="delete" id="delete-${postData.uuid}" data-delete='${postData.uid}'>
+                        <i class="fa-regular fa-trash-can" data-delete='${postData.uid}'></i>
+                        <span data-delete='${postData.uid}'>Delete</span>
+                    </div>
+                    <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
+                </div>
+                <p class="tweet-text">${postData.tweetText}</p>
+                <div class="tweet-details">
+                    <span class="tweet-detail">
+                        <i class="fa-regular fa-comment-dots"
+                        data-reply="${postData.uuid}"
+                        ></i>
+                        ${postData.replies.length}
+                    </span>
+                    <span class="tweet-detail">
+                        <i class="fa-solid fa-heart"
+                        data-like="${postData.uid}"
+                        ></i>
+                        ${postData.likes}
+                    </span>
+                    <span class="tweet-detail">
+                        <i class="fa-solid fa-retweet"
+                        data-retweet="${postData.uid}"
+                        ></i>
+                        ${postData.retweets}
+                    </span>
+                </div>   
+            </div>            
+        </div>
+        <div class="hidden" id="replies-${postData.uuid}">
+            ${repliesHtml}
+            <div>
+                <span class="user-reply-container">
+                    <textarea class="user-reply" placeholder="Post your reply" id="reply-input"></textarea>
+                    <button data disable data-reply-to-user="${postData.uid}">Reply</button>
+                </span>
+            </div>
+        </div>   
+    </div>
+    `
+}
+
+
 
 // VIEW
 function LogoutView(isVisible) {
@@ -260,4 +422,8 @@ function clearAuthFields(fields) {
 
 function clearInputField(field) {
 	field.value = ""
+}
+
+function clearAll(element) {
+    element.innerHTML = ""
 }

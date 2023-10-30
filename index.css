@@ -42,6 +42,14 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     font-size: 1.3rem;
 }
 
+/* logged in view */
+
+.profile-pic{
+    border: 1px solid lightgray;
+    border-radius: 50%;
+    width: 48px;
+}
+
 /* layout */
 
 /* logged-out view */
@@ -75,6 +83,22 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     text-align: center;
 }
 
+/* logged in view */
+.logged-in-view {
+    margin: 10px 20px;
+}
+
+main {
+    margin: 20px 10px;
+}
+
+.tweet-input-area {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+
 /* buttons */
 main > section:first-of-type button{
     width: 100%;
@@ -102,7 +126,7 @@ button {
     font-weight: 600;
 }
 
-.create-account-btn {
+.primary-btn {
     background-color: #0F8CDF;
     color: white;
     border: none;
@@ -114,6 +138,11 @@ button {
 .blk-btn {
     background-color: black;
     color: white;
+}
+
+/* loggged in view */
+.post-btn {
+    width: 100%;
 }
 
 /* input */
@@ -129,7 +158,22 @@ input {
 .signing-in-view-first-wrapper > input {
     margin-bottom: 10px;
     width: 100%;
-}   
+}
+
+
+textarea{
+    border: none;
+    resize: none;
+    padding: 10px;
+    margin: 0 0 20px 0;
+    height: 80px;
+    width: 100%;
+    font-size: 20px;
+    line-height: 30px;
+}
+
+
+
 /* media screens */
 
 @media (max-width: 600px) {
