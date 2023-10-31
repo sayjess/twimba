@@ -162,7 +162,7 @@ async function addPostToDB(postBody, auth) {
         const docRef = await addDoc(collection(db, collectionName), {
             uid: auth.uid,
             handle: auth.displayName,
-            profilePic: auth.photoURL,
+            profilePic: auth.photoURL ? auth.photoURL : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
             tweetText: postBody,
             likes: 0,
             retweets: 0,
@@ -289,7 +289,9 @@ function postButtonPressed() {
 
 //DISPLAY POSTS IN FEED 
 function fetchInRealtimeAndRenderPostsFromDB() {
-    onSnapshot(collection(db, collectionName), (querySnapshot) => {
+    // display feed in descending order
+    const q = query(collection(db, collectionName), orderBy("createdAt", "desc"))
+    onSnapshot(q, (querySnapshot) => {
         clearAll(feedEl)
         querySnapshot.forEach((doc) => {
             renderPost(feedEl, doc.data())
