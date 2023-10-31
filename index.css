@@ -194,6 +194,16 @@ textarea{
     display: flex;
 }
 
+.tweet-inner-data {
+    display: flex;
+    align-items: center;
+}
+
+.date-posted {
+    font-size: .5rem;
+    margin-left: .5em;
+}
+
 .delete{
     position: absolute;
     padding: 10px;
@@ -232,7 +242,6 @@ textarea{
     font-size: 12px;
     font-weight: 500;
     color: #555;
-    margin-top: 0;
 }
 
 .tweet-text{

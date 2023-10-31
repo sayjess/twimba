@@ -1,89 +1,43 @@
-const postsEl = document.getElementById("posts")
+function displayDate(firebaseDate) {
+    if (!firebaseDate) {
+        return "Date processing";
+    }
 
-function fetchInRealtimeAndRenderPostsFromDB() {
-    onSnapshot(collection(db, collectionName), (querySnapshot) => {
-        clearAll(postsEl)
+    const date = firebaseDate.toDate();
+    const currentDate = new Date();
+
+    const timeDiff = Math.abs(Math.floor((currentDate - date) / 1000)); // Time difference in seconds
+    const secondsInMinute = 60;
+    const secondsInHour = secondsInMinute * 60;
+    const secondsInDay = secondsInHour * 24;
+    const secondsInWeek = secondsInDay * 7;
+    const secondsInYear = secondsInDay * 365;
+    console.log(timeDiff)
+    console.log(currentDate)
+    console.log(date)
+    if (timeDiff < secondsInMinute) {
+        return `${timeDiff} sec${timeDiff > 1 ? 's' : ''} ago`;
+    } else if (timeDiff < secondsInHour) {
+        const minutes = Math.floor(timeDiff / secondsInMinute);
+        return `${minutes} min${minutes > 1 ? 's' : ''} ago`;
+    } else if (timeDiff < secondsInDay) {
+        const hours = Math.floor(timeDiff / secondsInHour);
+        return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    } else if (timeDiff < secondsInWeek) {
+        if (timeDiff < secondsInDay * 2) {
+            return "1 day ago";
+        } else {
+            const days = Math.floor(timeDiff / secondsInDay);
+            return `${days} days ago`;
+        }
+    } else if (timeDiff < secondsInYear) {
         
-        querySnapshot.forEach((doc) => {
-            renderPost(postsEl, doc.data())
-        })
-    })
+        return `${day} ${month}`;
+    } else {
+        const day = date.getDate();
+        const year = date.getFullYear();
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const month = monthNames[date.getMonth()];
+        return `${day} ${month} ${year}`;
+    }
 }
-
-/* == Functions - UI Functions == */
-
-function renderPost(postsEl, postData) {
-    postsEl.innerHTML += `
-        <div class="post">
-            <div class="header">
-                <h3>${displayDate(postData.createdAt)}</h3>
-                <img src="assets/emojis/${postData.mood}.png">
-            </div>
-            <p>
-                ${replaceNewlinesWithBrTags(postData.body)}
-            </p>
-        </div>
-    `
-}
-function clearAll(element) {
-    element.innerHTML = ""
-}
-
-function renderPost(postsEl, postData) {
-    feedEl.innerHTML += `
-    <div class="tweet">
-        <div class="tweet-inner">
-            <img src="${postData.profilePic}" class="profile-pic">
-            <div>
-                <div class="tweet-inner-upper">
-                    <p class="handle">${postData.handle}</p>
-                    <div class="delete" id="delete-${postData.uuid}" data-delete='${postData.uid}'>
-                        <i class="fa-regular fa-trash-can" data-delete='${postData.uid}'></i>
-                        <span data-delete='${postData.uid}'>Delete</span>
-                    </div>
-                    <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
-                </div>
-                <p class="tweet-text">${postData.tweetText}</p>
-                <div class="tweet-details">
-                    <span class="tweet-detail">
-                        <i class="fa-regular fa-comment-dots"
-                        data-reply="${postData.uuid}"
-                        ></i>
-                        ${postData.replies.length}
-                    </span>
-                    <span class="tweet-detail">
-                        <i class="fa-solid fa-heart ${likeIconClass}"
-                        data-like="${postData.uid}"
-                        ></i>
-                        ${postData.likes}
-                    </span>
-                    <span class="tweet-detail">
-                        <i class="fa-solid fa-retweet ${retweetIconClass}"
-                        data-retweet="${postData.uid}"
-                        ></i>
-                        ${postData.retweets}
-                    </span>
-                </div>   
-            </div>            
-        </div>
-        <div class="hidden" id="replies-${postData.uuid}">
-            ${repliesHtml}
-            <div>
-                <span class="user-reply-container">
-                    <textarea class="user-reply" placeholder="Post your reply" id="reply-input"></textarea>
-                    <button data disable data-reply-to-user="${postData.uid}">Reply</button>
-                </span>
-            </div>
-        </div>   
-    </div>
-    `
-}
-
-
-${repliesHtml}
-            <div>
-                <span class="user-reply-container">
-                    <textarea class="user-reply" placeholder="Post your reply" id="reply-input"></textarea>
-                    <button data disable data-reply-to-user="${postData.uid}">Reply</button>
-                </span>
-            </div>

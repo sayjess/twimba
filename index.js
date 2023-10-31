@@ -336,7 +336,10 @@ function renderPost(postsEl, postData) {
             <img src="${postData.profilePic}" class="profile-pic">
             <div>
                 <div class="tweet-inner-upper">
+                <div class="tweet-inner-data">
                     <p class="handle">${postData.handle}</p>
+                    <p class="date-posted">${displayDate(postData.createdAt)}</p>
+                </div>
                     <div class="delete" id="delete-${postData.uuid}" data-delete='${postData.uid}'>
                         <i class="fa-regular fa-trash-can" data-delete='${postData.uid}'></i>
                         <span data-delete='${postData.uid}'>Delete</span>
@@ -378,6 +381,52 @@ function renderPost(postsEl, postData) {
     </div>
     `
 }
+
+// display date
+function displayDate(firebaseDate) {
+    if (!firebaseDate) {
+        return ""
+    }
+
+    const date = firebaseDate.toDate()
+    const currentDate = new Date()
+
+    const timeDiff = Math.abs(Math.floor((currentDate - date) / 1000)) // Time difference in seconds
+    const secondsInMinute = 60
+    const secondsInHour = secondsInMinute * 60
+    const secondsInDay = secondsInHour * 24
+    const secondsInWeek = secondsInDay * 7
+    const secondsInYear = secondsInDay * 365
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    const day = date.getDate()
+    const year = date.getFullYear()
+    const month = monthNames[date.getMonth()]
+
+    if (timeDiff < secondsInMinute) {
+        return `${timeDiff}s`
+    } else if (timeDiff < secondsInHour) {
+        const minutes = Math.floor(timeDiff / secondsInMinute)
+        return `${minutes}m`
+    } else if (timeDiff < secondsInDay) {
+        const hours = Math.floor(timeDiff / secondsInHour)
+        return `${hours}h`
+    } else if (timeDiff < secondsInWeek) {
+        if (timeDiff < secondsInDay * 2) {
+            return "1d"
+        } else {
+            const days = Math.floor(timeDiff / secondsInDay)
+            return `${days}d`
+        }
+    } else if (timeDiff < secondsInYear) {
+        return `${day} ${month}`
+    } else {
+        return `${day} ${month} ${year}`
+    }
+}
+
+
+
 
 
 
