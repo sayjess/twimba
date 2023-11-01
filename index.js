@@ -6,7 +6,8 @@ import {
   signInWithPopup,
   signOut,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-auth.js";
 
 import { getFirestore,
@@ -21,6 +22,12 @@ import { getFirestore,
     updateDoc,
    deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"
 
+import { getStorage, 
+        ref, 
+        uploadBytes, 
+        getDownloadURL
+     } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-storage.js"
+
 const firebaseConfig = {
   apiKey: "AIzaSyDpcqazNO7BG0wRO9vkMZ2S4buaeMAmFTM",
   authDomain: "twimba-6ff84.firebaseapp.com",
@@ -32,6 +39,7 @@ const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 const provider = new GoogleAuthProvider()
 const db = getFirestore(app)
+const storage = getStorage(app)
 
 // UI ELEMENTS
 const getElement = (id) => document.getElementById(id)
@@ -39,6 +47,7 @@ const viewLoggedOutPage = getElement("logged-out-view")
 const viewLoggedInPage = getElement("logged-in-view")
 const viewSignInPage = getElement("signing-in-view")
 const viewCreateAccountPage = getElement('create-account-view')
+const viewInitialUpdateProfilePage = getElement('update-profile-view')
 
 const viewLoggedOutPageBtn = getElement("logout")
 const signInWithGoogleBtnEls = document.querySelectorAll(".sign-in-with-google-btn")
@@ -57,6 +66,10 @@ const textareaEl = getElement("tweet-input")
 const postBtnEl = getElement("tweet-btn")
 
 const feedEl = getElement("feed")
+
+const updateProfileBtn = getElement("update-profile-btn")
+const displayNameInput =getElement("username-update")
+const newPhotoURLInput = getElement("imageInput")
 
 
 // UI EVENT LISTENERS
@@ -88,6 +101,8 @@ addClickListener(onSignInAccountBtnEl, authSignInWithEmail)
 
 addClickListener(postBtnEl, postButtonPressed)
 
+addClickListener(updateProfileBtn, authUpdateProfile)
+
 // MAIN CODE
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -95,6 +110,7 @@ onAuthStateChanged(auth, (user) => {
         showLoggedInView()
         showProfilePicture(userProfilePictureEl, user)
         fetchInRealtimeAndRenderPostsFromDB()
+        console.log(auth.currentUser.photoURL)
     } else {
         showLoggedOutView()
     }
@@ -136,11 +152,43 @@ function authCreateAccountWithEmail() {
     createUserWithEmailAndPassword(auth, email.value, password.value)
         .then((userCredential) => {
             clearAuthFields([email, password])
+            initialUpdateProfileView(true)
         })
         .catch((error) => {
             console.error(error.message) 
         })
 }
+
+
+async function authUpdateProfile() {
+    const newDisplayName = displayNameInput.value;
+    const newPhotoURL = newPhotoURLInput.files[0];
+
+    if (!newDisplayName || !newPhotoURL) {
+        console.error('New display name or photo URL is empty');
+        return;
+    }
+    const storageRef = ref(storage, `profile-photos/${auth.currentUser.uid}`);
+    try {
+        const snapshot = await uploadBytes(storageRef, newPhotoURL);
+        console.log('Uploaded a blob or file!');
+        const downloadURL = await getDownloadURL(storageRef);
+        await updateProfile(auth.currentUser, {
+            displayName: newDisplayName,
+            photoURL: downloadURL,
+        });
+        showProfilePicture(userProfilePictureEl, auth.currentUser);
+        initialUpdateProfileView(false)
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+  
+  
+
+
+
 
 // sign in using email and password
 function authSignInWithEmail() {
@@ -209,6 +257,26 @@ function onCreateAccountBtnClick() {
         signInOrCreateAccountViewInMobile(true, "create-account")
     }
 }
+
+// upload image and name upon create account
+const imageInput = document.getElementById('imageInput');
+const uploadedImage = document.getElementById('uploadedImage');
+
+imageInput.addEventListener('change', (event) => {
+  const selectedFile = event.target.files[0];
+
+  if (selectedFile) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      uploadedImage.src = e.target.result;
+      uploadedImage.style.display = 'block';
+    };
+
+    reader.readAsDataURL(selectedFile);
+  }
+});
+
 function onCloseEmailSignInOrCreatePageClick(isCreateAccount) {
     if(window.innerWidth > 600) {
         if(isCreateAccount === "create-account"){
@@ -266,11 +334,11 @@ function signInOrCreateAccountViewInMobile(isOpen, view=null) {
 // USER PROFILE PICTURE DISPLAY
 function showProfilePicture(imgElement, user) {
     const photoURL = user.photoURL
-    
-    if (photoURL) {
+    if(user.photoURL){
         imgElement.src = photoURL
     } else {
-        imgElement.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+        imgElement.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'
+        
     }
 }
 
@@ -430,6 +498,8 @@ function displayDate(firebaseDate) {
 
 
 
+
+
 // VIEW
 function LogoutView(isVisible) {
     if(isVisible){
@@ -461,6 +531,14 @@ function createAccountView(isVisible) {
         viewCreateAccountPage.classList.remove("hidden")
     } else {
         viewCreateAccountPage.classList.add("hidden")
+    }
+}
+
+function initialUpdateProfileView(isVisible) {
+    if(isVisible){
+        viewInitialUpdateProfilePage.classList.remove("hidden")
+    } else {
+        viewInitialUpdateProfilePage.classList.add("hidden")
     }
 }
 

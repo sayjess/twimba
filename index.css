@@ -173,6 +173,40 @@ textarea{
     line-height: 30px;
 }
 
+/* updating account profile and name upon creation */
+#update-profile-view {
+    height: calc(100vh - 20px);
+}
+.update-profile {
+    height: calc(100% - 100px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.welcome-msg {
+    margin-bottom: 30px;
+}
+
+.welcome-msg > h3,
+.welcome-msg > p {
+    margin: 0;
+    text-align: center;
+}
+
+.custom-file-input {
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: .7rem;
+    color: #0F8CDF;
+    font-weight: bold;
+  }
+  
+  #imageInput {
+    display: none;
+  }
 
 /* tweet feed */
 .tweet{
@@ -392,6 +426,11 @@ textarea{
     }
     
 }
+
+
+
+  
+
 
 .hidden {
     display: none !important;
