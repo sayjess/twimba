@@ -153,6 +153,7 @@ function authCreateAccountWithEmail() {
         .then((userCredential) => {
             clearAuthFields([email, password])
             initialUpdateProfileView(true)
+            LoginView(false)
         })
         .catch((error) => {
             console.error(error.message) 
@@ -179,6 +180,7 @@ async function authUpdateProfile() {
         });
         showProfilePicture(userProfilePictureEl, auth.currentUser);
         initialUpdateProfileView(false)
+        LoginView(true)
     } catch (error) {
         console.error(error);
     }
@@ -213,6 +215,7 @@ async function addPostToDB(postBody, auth) {
             profilePic: auth.photoURL ? auth.photoURL : "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
             tweetText: postBody,
             likes: 0,
+            likedBy: [],
             retweets: 0,
             replies: [],
             isLiked: false,
@@ -250,7 +253,6 @@ function onEmailSignInBtnClick() {
 }
 
 function onCreateAccountBtnClick() {
-    console.log("create-account button clicked")
     if(window.innerWidth > 600) {
         signInOrCreateAccountViewInDesktop(true, "create-account")
     } else {
@@ -399,54 +401,39 @@ function renderPost(postsEl, postData) {
     }
 
     feedEl.innerHTML += `
-    <div class="tweet">
-        <div class="tweet-inner">
-            <img src="${postData.profilePic}" class="profile-pic">
-            <div>
-                <div class="tweet-inner-upper">
-                <div class="tweet-inner-data">
-                    <p class="handle">${postData.handle}</p>
-                    <p class="date-posted">${displayDate(postData.createdAt)}</p>
-                </div>
-                    <div class="delete" id="delete-${postData.uuid}" data-delete='${postData.uid}'>
-                        <i class="fa-regular fa-trash-can" data-delete='${postData.uid}'></i>
-                        <span data-delete='${postData.uid}'>Delete</span>
-                    </div>
-                    <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
-                </div>
-                <p class="tweet-text">${postData.tweetText}</p>
-                <div class="tweet-details">
-                    <span class="tweet-detail">
-                        <i class="fa-regular fa-comment-dots"
-                        data-reply="${postData.uuid}"
-                        ></i>
-                        ${postData.replies.length}
-                    </span>
-                    <span class="tweet-detail">
-                        <i class="fa-solid fa-heart"
-                        data-like="${postData.uid}"
-                        ></i>
-                        ${postData.likes}
-                    </span>
-                    <span class="tweet-detail">
-                        <i class="fa-solid fa-retweet"
-                        data-retweet="${postData.uid}"
-                        ></i>
-                        ${postData.retweets}
-                    </span>
-                </div>   
-            </div>            
+    <div class="tweet-container">
+        <img src="${postData.profilePic}" class="tweet-profile-pic">
+        <div class="tweet-user-data">
+            <p class="tweet-username">${postData.handle}</p>
+            <p class="tweet-date-posted">${displayDate(postData.createdAt)}</p>
         </div>
-        <div class="hidden" id="replies-${postData.uuid}">
-            ${repliesHtml}
-            <div>
-                <span class="user-reply-container">
-                    <textarea class="user-reply" placeholder="Post your reply" id="reply-input"></textarea>
-                    <button data disable data-reply-to-user="${postData.uid}">Reply</button>
-                </span>
-            </div>
-        </div>   
-    </div>
+        <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
+        <p class="tweet-text">${postData.tweetText}</p>
+        <div class="tweet-icons">
+            <span class="tweet-reply">
+                <i class="fa-regular fa-comment-dots"
+                    data-reply="${postData.uuid}">
+                </i>
+                    ${postData.replies.length}
+            </span>
+            <span class="tweet-heart">
+                <i class="fa-solid fa-heart"
+                data-like="${postData.uid}"
+                ></i>
+                ${postData.likes}
+            </span>
+            <span class="tweet-retweet">
+                <i class="fa-solid fa-retweet"
+                data-retweet="${postData.uid}"
+                ></i>
+                ${postData.retweets}
+            </span>
+        </div>
+    </div>   
+                 
+        
+
+
     `
 }
 
@@ -492,13 +479,6 @@ function displayDate(firebaseDate) {
         return `${day} ${month} ${year}`
     }
 }
-
-
-
-
-
-
-
 
 // VIEW
 function LogoutView(isVisible) {

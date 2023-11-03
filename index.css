@@ -88,6 +88,43 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     margin: 10px 20px;
 }
 
+/* logged in view */
+    /* tweet */
+    .tweet-container {
+        margin-top: 20px;
+        display: grid;
+        align-items: center;
+        grid-template-columns: 50px repeat(3, 1fr);
+        grid-template-areas: 
+        "profile-pic data   .    ellipsis"
+        ".           tweet  tweet   tweet"
+        ".           icons icons icons";
+    }
+    
+    .tweet-profile-pic {grid-area: profile-pic;}
+    .tweet-user-data   {grid-area: data;}
+    .fa-ellipsis       {grid-area: ellipsis;}
+    .tweet-text        {grid-area: tweet;}
+    .tweet-icons       {grid-area: icons;}
+
+    .tweet-user-data {
+        display: flex;
+    }
+
+    .tweet-icons {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .fa-ellipsis {
+        justify-self: end;
+        align-self: start;
+    }
+
+    .tweet-user-data {
+        align-self: start;
+    }
+
 main {
     margin: 20px 10px;
 }
@@ -96,6 +133,30 @@ main {
     display: flex;
     align-items: flex-start;
     gap: 10px;
+}
+
+/* logged in view */
+.tweet-profile-pic {
+    width: 50px;
+    border-radius: 50%;
+}
+
+.tweet-user-data,
+.tweet-text,
+.tweet-reply {
+    margin-left: 10px;
+}
+
+.tweet-date-posted {
+    margin-left: 3px;
+    font-size: .7rem;
+    align-self: center;
+    color: rgba(128, 128, 128, 0.568);
+}
+
+.tweet-username,
+.tweet-date-posted {
+    margin-block: 0;
 }
 
 
@@ -208,102 +269,7 @@ textarea{
     display: none;
   }
 
-/* tweet feed */
-.tweet{
-    border-top: 1px solid lightgray;
-    padding: 20px 0 0 0;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.tweet-inner{
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    position: relative;
-    
-}
-
-.tweet-inner-upper {
-    display: flex;
-}
-
-.tweet-inner-data {
-    display: flex;
-    align-items: center;
-}
-
-.date-posted {
-    font-size: .5rem;
-    margin-left: .5em;
-}
-
-.delete{
-    position: absolute;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: black;
-    color: red;
-    right: 20px;
-    display: none;
-    cursor: pointer;
-}
-
-.fa-ellipsis {
-    margin-left: auto;
-}
-
-.tweet-details{
-    display: flex;
-    font-size: 13px;
-    justify-content: space-between;
-    width: 160px;
-}
-
-.tweet-detail{
-    display: flex;
-    gap: 4px;
-}
-
-.tweet-reply{
-    border-top: 1px solid lightgray;
-    padding: 20px 0 0 0px;
-    margin: 10px 0 10px 40px;
-    width: 80%;
-}
-
-.handle{
-    font-size: 12px;
-    font-weight: 500;
-    color: #555;
-}
-
-.tweet-text{
-    width: 207px;
-    font-size: 14px;
-    line-height: 20px;
-}
-
-.user-reply {
-    padding: 0px;
-    margin: 0 0 0 40px;
-    height: 40px;
-    width: 70%;
-    font-size: 16px;
-    line-height: 40px;
-    
-}
-
-.user-reply-container > button {
-    padding: 10px 0;
-    border-radius: 30px;
-    width: 30%; 
-    font-size: 16px;
-    font-weight: bold;
-}
-
-
-/* media screens */
+  /* media screens */
 
 @media (max-width: 600px) {
 
@@ -333,8 +299,10 @@ textarea{
 
     /* layout */
 
-    main {
+    .logged-in-view {
         position: relative;
+        max-width: 700px;
+        margin-inline: auto;
     }
 
     /* logged out view */
@@ -372,6 +340,9 @@ textarea{
         padding: 10px;
     }
 
+    
+    
+
     /* typography, icons, img */
     /* logged out view */
     #logged-out-view .twitter-logo {
@@ -393,6 +364,7 @@ textarea{
     .signing-in-view-first-wrapper p {
         font-size: 1.4rem;
     }
+
 
     /* buttons */
 
@@ -426,11 +398,6 @@ textarea{
     }
     
 }
-
-
-
-  
-
 
 .hidden {
     display: none !important;

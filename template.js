@@ -1,41 +1,27 @@
-function authUpdateProfile() {
-    const newDisplayName = displayNameInput.value;
-    const newPhotoURL = newPhotoURLInput.files[0];;
-
-    if (!newDisplayName || !newPhotoURL) {
-        console.error('New display name or photo URL is empty');
-        return;
-    }
-
-    updateProfile(auth.currentUser, {
-        handle: newDisplayName, 
-        profilePic: newPhotoURL
-    })
-        .then(() => {
-            console.log('Profile updated!');
-            initialUpdateProfileView(false)
-        })
-        .catch((error) => {
-            console.error(error.message);
-        });
-}
-
-
----------
-
-if (user && file) {
-    const storageRef = storage.ref(`profile-photos/${user.uid}`);
-    const uploadTask = storageRef.put(file);
-
-    uploadTask.then((snapshot) => {
-        return snapshot.ref.getDownloadURL();
-    }).then((downloadURL) => {
-        return user.updateProfile({
-            photoURL: downloadURL
-        });
-    }).then(() => {
-        console.log('Profile photo updated');
-    }).catch((error) => {
-        console.error(error);
-    });
-}
+<div class="tweet">
+    <img src="${postData.profilePic}" class="profile-pic">
+    <p class="handle">${postData.handle}</p>
+    <p class="date-posted">${displayDate(postData.createdAt)}</p>
+    <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
+    <p class="tweet-text">${postData.tweetText}</p>
+    <span class="tweet-detail">
+        <i class="fa-regular fa-comment-dots"
+            data-reply="${postData.uuid}">
+        </i>
+            ${postData.replies.length}
+    </span>
+    <span class="tweet-detail">
+        <i class="fa-solid fa-heart"
+        data-like="${postData.uid}"
+        ></i>
+        ${postData.likes}
+    </span>
+    <span class="tweet-detail">
+        <i class="fa-solid fa-retweet"
+        data-retweet="${postData.uid}"
+        ></i>
+        ${postData.retweets}
+    </span>
+</div>   
+                 
+        
