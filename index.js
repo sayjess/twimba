@@ -17,9 +17,13 @@ import { getFirestore,
     onSnapshot,
     query,
     where,
+    getDoc,
     orderBy,
     doc,
     updateDoc,
+    arrayUnion,
+    arrayRemove,
+    Timestamp,
    deleteDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js"
 
 import { getStorage, 
@@ -103,6 +107,16 @@ addClickListener(postBtnEl, postButtonPressed)
 
 addClickListener(updateProfileBtn, authUpdateProfile)
 
+document.addEventListener('click', function(e){
+    if(e.target.dataset.like){
+       handleLikeClick(e.target.dataset.like) 
+    } else if(e.target.dataset.openReply) {
+        handleOpenReply(e.target.dataset.openReply)
+    } else if(e.target.dataset.replyToUser){
+        handleReplyToUser(e.target.dataset.replyToUser)
+    } 
+})
+
 // MAIN CODE
 onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -110,14 +124,16 @@ onAuthStateChanged(auth, (user) => {
         showLoggedInView()
         showProfilePicture(userProfilePictureEl, user)
         fetchInRealtimeAndRenderPostsFromDB()
-        console.log(auth.currentUser.photoURL)
     } else {
         showLoggedOutView()
     }
 })
 
+
 // GLOBAL VARIABLE
 const collectionName = "posts"
+
+
 
 // FUNCTIONS
 
@@ -185,12 +201,6 @@ async function authUpdateProfile() {
         console.error(error);
     }
 }
-
-  
-  
-
-
-
 
 // sign in using email and password
 function authSignInWithEmail() {
@@ -364,12 +374,16 @@ function fetchInRealtimeAndRenderPostsFromDB() {
     onSnapshot(q, (querySnapshot) => {
         clearAll(feedEl)
         querySnapshot.forEach((doc) => {
-            renderPost(feedEl, doc.data())
+            // getLikedByCountForTweet(doc)
+            renderPost(feedEl, doc)
         })
     })
 }
 
-function renderPost(postsEl, postData) {
+
+// render feed
+function renderPost(postsEl, tweetDoc) {
+    const postData = tweetDoc.data()
     let likeIconClass = ''
         
     if (postData.isLiked){
@@ -387,16 +401,13 @@ function renderPost(postsEl, postData) {
     if(postData.replies.length > 0){
         postData.replies.forEach(function(reply){
             repliesHtml+=`
-                <div class="tweet-reply">
-                    <div class="tweet-inner">
-                        <img src="${reply.profilePic}" class="profile-pic">
-                            <div>
-                                <p class="handle">${reply.handle}</p>
-                                <p class="tweet-text">${reply.tweetText}</p>
-                            </div>
+                <div class="reply-to-user">
+                        <img src="${reply.profilePic}"          class="reply-profile-pic">
+                        <div class="reply-user-data">
+                            <p class="reply-handle">${reply.handle}</p>
+                            <p class="reply-tweet-text">${reply.tweetText}</p>
                         </div>
-                </div>
-`
+                </div>`
         })
     }
 
@@ -407,20 +418,20 @@ function renderPost(postsEl, postData) {
             <p class="tweet-username">${postData.handle}</p>
             <p class="tweet-date-posted">${displayDate(postData.createdAt)}</p>
         </div>
-        <i class="fa-solid fa-ellipsis" data-dots="${postData.uid}"></i>
+        <i class="fa-solid fa-ellipsis" data-dots="${tweetDoc.id}"></i>
         <p class="tweet-text">${postData.tweetText}</p>
         <div class="tweet-icons">
             <span class="tweet-reply">
                 <i class="fa-regular fa-comment-dots"
-                    data-reply="${postData.uuid}">
+                    data-open-reply="${tweetDoc.id}">
                 </i>
-                    ${postData.replies.length}
+                    ${getCommentCountForTweet(postData.replies)}
             </span>
             <span class="tweet-heart">
-                <i class="fa-solid fa-heart"
-                data-like="${postData.uid}"
+                <i class="fa-solid fa-heart"    
+                data-like="${tweetDoc.id}"
                 ></i>
-                ${postData.likes}
+                ${getLikedByCountForTweet(postData.likedBy)}
             </span>
             <span class="tweet-retweet">
                 <i class="fa-solid fa-retweet"
@@ -429,15 +440,18 @@ function renderPost(postsEl, postData) {
                 ${postData.retweets}
             </span>
         </div>
-    </div>   
-                 
-        
-
-
+    </div>
+    <div class="replies-container hidden" id="replies-${tweetDoc.id}">
+        ${repliesHtml}
+        <div class="reply-to-user-container">
+            <textarea class="user-reply" placeholder="Post your reply" id="reply-input-${tweetDoc.id}"></textarea>
+            <button class="primary-btn reply-btn" data disable data-reply-to-user="${tweetDoc.id}">Reply</button>
+        </div>
+    </div>
     `
 }
 
-// display date
+// display date (date when user posted a tweet)
 function displayDate(firebaseDate) {
     if (!firebaseDate) {
         return ""
@@ -478,6 +492,83 @@ function displayDate(firebaseDate) {
     } else {
         return `${day} ${month} ${year}`
     }
+}
+
+// TWEET, COMMENT, RETWEET
+async function handleLikeClick(docId) {
+    const docRef = doc(db, collectionName, docId);
+    const userId = auth.currentUser.uid;
+  
+    try {
+      const docSnapshot = await getDoc(docRef);
+      if (docSnapshot.exists()) {
+        const tweetData = docSnapshot.data();
+        const likedBy = tweetData.likedBy || [];
+  
+        // Check if the user's ID is not already in the likedBy array
+        if (!likedBy.includes(userId)) {
+          await updateDoc(docRef, {
+            likedBy: arrayUnion(userId)
+          });
+          console.log("Liked the tweet.");
+        } else {
+          // If the user's ID is already in the array, unlike the tweet
+          await updateDoc(docRef, {
+            likedBy: arrayRemove(userId)
+          });
+          console.log("Unliked the tweet.");
+        }
+      } else {
+        console.log("Tweet not found.");
+      }
+    } catch (error) {
+      console.error("Error liking/unliking the tweet:", error);
+    }
+  }
+
+function handleOpenReply(docId) {
+    document.getElementById(`replies-${docId}`).classList.toggle('hidden')
+}
+
+async function handleReplyToUser(docId) {
+    const docRef = doc(db, collectionName, docId);
+    const replyInputEl = document.getElementById(`reply-input-${docId}`)
+
+    try {
+        const docSnapshot = await getDoc(docRef);
+        console.log(docSnapshot.exists() && replyInputEl.value)
+        if (docSnapshot.exists() && replyInputEl.value) {
+          
+            const newComment = {
+                handle: auth.currentUser.displayName,
+                profilePic: auth.currentUser.photoURL,
+                tweetText: replyInputEl.value,
+            };
+
+            await updateDoc(docRef, {
+                replies: arrayUnion({
+                    ...newComment,
+                    createdAt: Timestamp.now(),
+                })
+            })
+            handleOpenReply(docId)
+        }
+    } catch (error) {
+        console.error("Error commenting on the tweet:", error);
+    }
+}
+
+
+
+
+
+// Counter (like, comment, retweet)
+function getLikedByCountForTweet(likedByArray) {   
+    return likedByArray.length
+}
+
+function getCommentCountForTweet(repliesArray){
+    return repliesArray.length
 }
 
 // VIEW

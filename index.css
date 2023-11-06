@@ -226,6 +226,9 @@ input {
 textarea{
     border: none;
     resize: none;
+}
+
+.post-input {
     padding: 10px;
     margin: 0 0 20px 0;
     height: 80px;
@@ -397,6 +400,57 @@ textarea{
         padding: 18px;
     }
     
+}
+
+.replies-container {
+    display: grid;
+    margin-left: 50px;
+    margin-top: 20px;
+}
+
+.reply-to-user {
+    padding-top: 20px;
+    margin-bottom: 20px;
+    border-top: 1px solid lightgray;
+    display: flex;
+    
+}
+
+.reply-profile-pic {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.reply-user-data {
+    margin-left: 20px;
+}
+
+.reply-handle,
+.reply-tweet-text {
+    margin: 0;
+}
+
+
+
+
+
+.reply-to-user-container {
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+}
+
+.user-reply {
+    padding: 0px 10px;
+    height: 40px;
+    font-size: 16px;
+    line-height: 40px;
+}
+
+.reply-btn {
+    font-size: 1rem;
 }
 
 .hidden {
