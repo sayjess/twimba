@@ -50,6 +50,31 @@ main > section:first-of-type .logged-out-second-wrapper h3 {
     width: 48px;
 }
 
+.logged-in-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 50px;
+    align-items: center;
+}
+
+.logged-in-header > div {
+    display: flex;
+}
+
+.logged-in-header > div >  h2 {
+    font-size: 1rem;
+    margin-left: 10px;
+    font-weight: 300;
+}
+.logged-in-header > div > img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+
 /* layout */
 
 /* logged-out view */
@@ -200,6 +225,14 @@ button {
 .blk-btn {
     background-color: black;
     color: white;
+}
+
+.logout-btn {
+    font-size: .8rem;
+    padding: 10px 30px;
+    background-color: black;
+    color: white;
+    font-weight: 500;
 }
 
 /* loggged in view */

@@ -66,6 +66,9 @@ const onSignInAccountBtnEl = getElement("sign-in-btn")
 
 
 const userProfilePictureEl = getElement("profile-pic")
+const userHeaderProfilePictureEl = getElement("header-pfp")
+const headerMessage = getElement("header-message")
+
 const textareaEl = getElement("tweet-input")
 const postBtnEl = getElement("tweet-btn")
 
@@ -122,7 +125,7 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         console.log("Successfully signed in")
         showLoggedInView()
-        showProfilePicture(userProfilePictureEl, user)
+        showUserPictureAndName(user)
         fetchInRealtimeAndRenderPostsFromDB()
     } else {
         showLoggedOutView()
@@ -194,7 +197,7 @@ async function authUpdateProfile() {
             displayName: newDisplayName,
             photoURL: downloadURL,
         });
-        showProfilePicture(userProfilePictureEl, auth.currentUser);
+        showProfilePicture(auth.currentUser);
         initialUpdateProfileView(false)
         LoginView(true)
     } catch (error) {
@@ -344,14 +347,19 @@ function signInOrCreateAccountViewInMobile(isOpen, view=null) {
 }
 
 // USER PROFILE PICTURE DISPLAY
-function showProfilePicture(imgElement, user) {
+function showUserPictureAndName(user) {
     const photoURL = user.photoURL
     if(user.photoURL){
-        imgElement.src = photoURL
+        userProfilePictureEl.src = photoURL
+        userHeaderProfilePictureEl.src = photoURL
     } else {
-        imgElement.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'
+        userProfilePictureEl.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png'
         
     }
+
+    const fullName = user.displayName.split(" "); // Split the 
+    const firstName = fullName[0];
+    headerMessage.textContent += firstName
 }
 
 // TWEET BUTTON PRESS
